@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function POST(req: NextRequest) {
@@ -37,7 +38,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4. Return success response
+    // 4. Trigger on-demand revalidation for the homepage
+    revalidatePath('/');
+
+    // 5. Return success response
     return NextResponse.json(
       { message: "News signal ingested successfully", signal: data[0] },
       { status: 201 }
